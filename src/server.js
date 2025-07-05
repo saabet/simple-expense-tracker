@@ -1,6 +1,7 @@
 require('dotenv').config();
 const Hapi = require('@hapi/hapi');
 const authPlugin = require('./api/auth');
+const expensesPlugin = require('./api/expense');
 
 const init = async () => {
   const server = Hapi.server({
@@ -13,7 +14,7 @@ const init = async () => {
     },
   });
 
-  await server.register(authPlugin);
+  await server.register([authPlugin, expensesPlugin]);
 
   await server.start();
   console.log(`Server running at: ${server.info.uri}`);
