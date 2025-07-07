@@ -2,7 +2,7 @@ const bcrypt = require('bcrypt');
 const { addUser, getUserByUsername } = require('../../services/userService');
 const { registerSchema, loginSchema } = require('../../validations/authValidations');
 const { generateToken } = require('../../utils/tokenUtils');
-const { response_success, response_fail, response_error } = require('../../utils/responseBuilder');
+const { response_success, response_fail } = require('../../utils/responseBuilder');
 
 const register = async (request, h) => {
   const { error } = registerSchema.validate(request.payload);
