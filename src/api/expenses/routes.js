@@ -6,27 +6,28 @@ const {
   editExpense,
   removeExpense,
 } = require('./handler');
+const { wrapHandler } = require('../../utils/responseWrapper');
 
 const routes = [
   {
     method: 'POST',
     path: '/expenses',
-    handler: createExpense,
+    handler: wrapHandler(createExpense),
   },
   {
     method: 'GET',
     path: '/expenses',
-    handler: getAllExpenses,
+    handler: wrapHandler(getAllExpenses),
   },
   {
     method: 'GET',
     path: '/expenses/{id}',
-    handler: getExpense,
+    handler: wrapHandler(getExpense),
   },
   {
     method: 'GET',
     path: '/expenses/summary',
-    handler: summaryExpense,
+    handler: wrapHandler(summaryExpense),
   },
   {
     method: 'GET',
@@ -38,12 +39,12 @@ const routes = [
   {
     method: 'PUT',
     path: '/expenses/{id}',
-    handler: editExpense,
+    handler: wrapHandler(editExpense),
   },
   {
     method: 'DELETE',
     path: '/expenses/{id}',
-    handler: removeExpense,
+    handler: wrapHandler(removeExpense),
   },
 ];
 

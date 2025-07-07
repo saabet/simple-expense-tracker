@@ -7,6 +7,7 @@ const {
 } = require('../../services/expensesService');
 const { expenseSchema } = require('../../validations/expenseValidation');
 const { verifyToken, verifyToken } = require('../../utils/tokenUtils');
+const { response_success, response_fail } = require('../../utils/responseBuilder');
 
 const extractUserId = (request) => {
   const token = request.headers.authorizaion?.replace('Bearer ', '');
@@ -16,11 +17,11 @@ const extractUserId = (request) => {
 
 const createExpense = (request, h) => {
   const { error } = expenseSchema.validate(request.payload);
-  if (error) return h.response({ message: error.message }).code(400);
+  if (error) return response_fail(h, error.message);
 
   const userId = extractUserId(payload);
   const newExpense = addExpense({ ...request.payload, userId });
-  return h.response({ message: 'Expense created', expense: newExpense }).code(201);
+  return response_success(h, 'Expense created', { expense: newExpense }, 201);
 };
 
 const getAllExpenses = (request, h) => {
@@ -28,23 +29,18 @@ const getAllExpenses = (request, h) => {
   const { startDate, endDate, category } = request.query;
   let filtered = getExpensesByUser(userId);
 
-  if (startDate) {
-    filtered = filtered.filter((e) => new Date(e.date) >= new Date(startDate));
-  }
-  if (endDate) {
-    filtered = filtered.filter((e) => new Date(e.date) <= new Date(endDate));
-  }
-  if (category) {
-    filtered = filtered.filter((e) => e.category === category);
-  }
-  return h.response({ expenses: filtered }).code(200);
+  if (startDate) filtered = filtered.filter((e) => new Date(e.date) >= new Date(startDate));
+  if (endDate) filtered = filtered.filter((e) => new Date(e.date) <= new Date(endDate));
+  if (category) filtered = filtered.filter((e) => e.category === category);
+
+  return response_success(h, 'Expenses retrieved', { expenses: filtered });
 };
 
 const getExpense = (request, h) => {
   const userId = extractUserId(request);
   const expense = getExpenseById(request.params.id, userId);
-  if (!expense) return h.response({ message: 'Not found' }).code(404);
-  return h.response({ expense }).code(200);
+  if (!expense) return response_fail(h, 'Expense not found', 401);
+  return response_success(h, 'Expense found', { expense });
 };
 
 const summaryExpense = (request, h) => {
@@ -58,27 +54,28 @@ const summaryExpense = (request, h) => {
     perCategory[e.category] = (perCategory[e.category] || 0) + e.amount;
   });
 
-  return h
-    .response({
-      total,
-      perCategory,
-      count: userExpenses.length,
-    })
-    .code(200);
+  return response_success(h, 'Summary generated', {
+    total,
+    perCategory,
+    count: userExpenses.length,
+  });
 };
 
 const editExpense = (request, h) => {
+  const { error } = expenseSchema.validate(request.payload);
+  if (error) return response_fail(h, error.message);
+
   const userId = extractUserId(request);
   const updated = updateExpense(request.params.id, userId, request.payload);
-  if (!updated) return h.response({ message: 'Not found' }).code(404);
-  return h.response({ message: 'Expense updated' }).code(200);
+  if (!updated) return response_fail(h, 'Expense not found', 404);
+  return response_success(h, 'Expense updated', { expense: updated });
 };
 
 const removeExpense = (request, h) => {
   const userId = extractUserId(request);
   const success = deleteExpense(request.params.id, userId);
-  if (!success) return h.response({ message: 'Not found' }).code(404);
-  return h.response({ message: 'Expense deleted' }).code(200);
+  if (!success) return response_fail(h, 'Expense not found', 404);
+  return response_success(h, 'Expense deleted');
 };
 
 module.exports = {
