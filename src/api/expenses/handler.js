@@ -6,7 +6,7 @@ const {
   deleteExpense,
 } = require('../../services/expensesService');
 const { expenseSchema } = require('../../validations/expenseValidation');
-const { verifyToken, verifyToken } = require('../../utils/tokenUtils');
+const { verifyToken } = require('../../utils/tokenUtils');
 const { response_success, response_fail } = require('../../utils/responseBuilder');
 
 const extractUserId = (request) => {
