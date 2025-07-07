@@ -1,4 +1,4 @@
-const expense = [];
+const expenses = [];
 
 const addExpense = ({ title, amount, category, date, userId }) => {
   const expense = {
@@ -16,7 +16,7 @@ const addExpense = ({ title, amount, category, date, userId }) => {
 const getExpensesByUser = (userId) => expenses.filter((e) => e.userId === userId);
 
 const getExpenseById = (id, userId) => {
-  expenses.find((e) => e.id == id && e.userId === userId);
+  return expenses.find((e) => e.id === id && e.userId === userId);
 };
 
 const updateExpense = (id, userId, data) => {
@@ -27,7 +27,7 @@ const updateExpense = (id, userId, data) => {
 };
 
 const deleteExpense = (id, userId) => {
-  const index = expense.findIndex((e) => e.id === id && e.userId === userId);
+  const index = expenses.findIndex((e) => e.id === id && e.userId === userId);
   if (index === -1) return false;
   expenses.splice(index, 1);
   return true;
