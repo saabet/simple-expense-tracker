@@ -10,7 +10,7 @@ const { verifyToken } = require('../../utils/tokenUtils');
 const { response_success, response_fail } = require('../../utils/responseBuilder');
 
 const extractUserId = (request) => {
-  const token = request.headers.authorizaion?.replace('Bearer ', '');
+  const token = request.headers.authorization?.replace('Bearer ', '');
   const decoded = verifyToken(token);
   return decoded.id;
 };
