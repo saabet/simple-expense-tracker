@@ -19,7 +19,7 @@ const createExpense = (request, h) => {
   const { error } = expenseSchema.validate(request.payload);
   if (error) return response_fail(h, error.message);
 
-  const userId = extractUserId(payload);
+  const userId = extractUserId(request);
   const newExpense = addExpense({ ...request.payload, userId });
   return response_success(h, 'Expense created', { expense: newExpense }, 201);
 };
