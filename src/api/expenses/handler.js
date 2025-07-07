@@ -47,11 +47,11 @@ const summaryExpense = (request, h) => {
   const userId = extractUserId(request);
   const userExpenses = getExpensesByUser(userId);
 
-  const total = userExpenses.reduce((acc, e) => acc + amount, 0);
+  const total = userExpenses.reduce((acc, e) => acc + Number(e.amount), 0);
 
   const perCategory = {};
   userExpenses.forEach((e) => {
-    perCategory[e.category] = (perCategory[e.category] || 0) + e.amount;
+    perCategory[e.category] = (perCategory[e.category] || 0) + Number(e.amount);
   });
 
   return response_success(h, 'Summary generated', {
