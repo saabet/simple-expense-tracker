@@ -3,6 +3,7 @@ const { addUser, getUserByUsername } = require('../../services/userService');
 const { registerSchema, loginSchema } = require('../../validations/authValidations');
 const { generateToken } = require('../../utils/tokenUtils');
 const { response_success, response_fail } = require('../../utils/responseBuilder');
+const db = require('../../db/database');
 
 const register = async (request, h) => {
   const { error } = registerSchema.validate(request.payload);
@@ -34,4 +35,15 @@ const login = async (request, h) => {
   return response_success(h, 'Login successful', { token });
 };
 
-module.exports = { register, login };
+const resetPassword = async (request, h) => {
+  const { username, newPassword } = request.payload;
+  const user = getUserByUsername(username);
+  if (!user) return response_fail(h, 'User not found', 404);
+
+  const hashed = await bcrypt.hash(newPassword, 10);
+  stmt = db.prepare(`UPDATE users SET password = ? WHERE username = ?`);
+  stmt.run(hashed, username);
+  return response_success(h, 'Password reset successfully');
+};
+
+module.exports = { register, login, resetPassword };
