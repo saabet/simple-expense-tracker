@@ -2,6 +2,7 @@ const {
   addExpense,
   getExpensesByUser,
   getExpenseById,
+  exportToCSV,
   updateExpense,
   deleteExpense,
 } = require('../../services/expensesService');
@@ -61,6 +62,14 @@ const summaryExpense = (request, h) => {
   });
 };
 
+const exportToCSVHandler = (request, h) => {
+  const userId = extractUserId(request);
+  const expenses = getExpensesByUser(userId);
+
+  exportToCSV(expenses);
+  return response_success(h, {message: 'CSV file saved to server', path: '/exports/expenses/expenses.csv' });
+};
+
 const editExpense = (request, h) => {
   const { error } = expenseSchema.validate(request.payload);
   if (error) return response_fail(h, error.message);
@@ -83,6 +92,7 @@ module.exports = {
   getAllExpenses,
   getExpense,
   summaryExpense,
+  exportToCSVHandler,
   editExpense,
   removeExpense,
 };

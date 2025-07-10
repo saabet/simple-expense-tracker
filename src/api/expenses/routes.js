@@ -3,6 +3,7 @@ const {
   getAllExpenses,
   getExpense,
   summaryExpense,
+  exportToCSVHandler,
   editExpense,
   removeExpense,
 } = require('./handler');
@@ -28,6 +29,11 @@ const routes = [
     method: 'GET',
     path: '/expenses/summary',
     handler: wrapHandler(summaryExpense),
+  },
+  {
+    method: 'GET',
+    path: '/expenses/export/csv',
+    handler: wrapHandler(exportToCSVHandler),
   },
   {
     method: 'GET',

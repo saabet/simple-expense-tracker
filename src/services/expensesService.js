@@ -1,10 +1,12 @@
 const db = require('../db/database');
 const { v4: uuidv4 } = require('uuid');
+const { Parser } = require('json2csv');
+const fs = require('fs');
 
 const addExpense = (expense) => {
   const id = uuidv4();
   const stmt = db.prepare(
-    `INSERT INTO expenses (id, title, amount, date, cateory, userId) VALUES (?, ?, ?, ?, ?, ?)`
+    `INSERT INTO expenses (id, title, amount, date, category, userId) VALUES (?, ?, ?, ?, ?, ?)`
   );
   stmt.run(id, expense.title, expense.amount, expense.date, expense.category, expense.userId);
   return { id, ...expense };
@@ -18,6 +20,16 @@ const getExpensesByUser = (userId) => {
 const getExpenseById = (id, userId) => {
   const stmt = db.prepare(`SELECT * FROM expenses WHERE id = ? AND userId = ?`);
   return stmt.all(id, userId);
+};
+
+const exportToCSV = (expenses) => {
+  const dirPath = path.join(__dirname, '../../exports/expenses');
+  if (!fs.existsSync(dirPath)) fs.mkdirSync(dirPath, { recursive: true });
+  
+  const filePath = path.join(dirPath, 'expenses.csv');
+  const parser = new Parser();
+  const csv = parser.parse(expenses);
+  fs.writeFileSync(filePath, csv);
 };
 
 const updateExpense = (id, userId, data) => {
@@ -34,4 +46,4 @@ const deleteExpense = (id, userId) => {
   return result.changes > 0;
 };
 
-module.exports = { addExpense, getExpensesByUser, getExpenseById, updateExpense, deleteExpense };
+module.exports = { addExpense, getExpensesByUser, getExpenseById, exportToCSV, updateExpense, deleteExpense };
