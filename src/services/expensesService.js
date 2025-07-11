@@ -26,10 +26,17 @@ const getExpenseById = (id, userId) => {
 const exportToCSV = (expenses) => {
   const dirPath = path.join(__dirname, '../../exports/expenses');
   if (!fs.existsSync(dirPath)) fs.mkdirSync(dirPath, { recursive: true });
-  
-  const filePath = path.join(dirPath, 'expenses.csv');
+
+  const cleanedExpenses = expenses.map((e) => ({
+    Date: e.date,
+    Title: e.title,
+    Category: e.category,
+    Amount: e.amount,
+  }));  
+
   const parser = new Parser();
-  const csv = parser.parse(expenses);
+  const csv = parser.parse(cleanedExpenses);
+  const filePath = path.join(dirPath, 'expenses.csv');
   fs.writeFileSync(filePath, csv);
 };
 
