@@ -62,7 +62,7 @@ const summaryExpense = (request, h) => {
   });
 };
 
-const exportToCSVHandler = (request, h) => {
+const exportExpenseToCSV = (request, h) => {
   const userId = extractUserId(request);
   const expenses = getExpensesByUser(userId);
 
@@ -92,7 +92,7 @@ module.exports = {
   getAllExpenses,
   getExpense,
   summaryExpense,
-  exportToCSVHandler,
+  exportExpenseToCSV,
   editExpense,
   removeExpense,
 };

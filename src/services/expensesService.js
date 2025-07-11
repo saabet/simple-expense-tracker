@@ -2,6 +2,7 @@ const db = require('../db/database');
 const { v4: uuidv4 } = require('uuid');
 const { Parser } = require('json2csv');
 const fs = require('fs');
+const path = require('path');
 
 const addExpense = (expense) => {
   const id = uuidv4();
